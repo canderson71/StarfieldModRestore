@@ -1,0 +1,34 @@
+# --- Python virtual environment ---
+.venv/
+env/
+venv/
+
+# --- Python cache ---
+__pycache__/
+*.pyc
+
+# --- Logs ---
+*.log
+
+# --- Databases ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- Backups ---
+*.bak
+
+# --- VS Code junk ---
+.vscode/
+
+# --- Ruff cache ---
+.ruff_cache
+
+# --- Build artifacts / generated stuff ---
+build/
+dist/
+*.egg-info/
+
+# --- Anything else that smells like runtime output ---
+*.tmp
+*.cache
