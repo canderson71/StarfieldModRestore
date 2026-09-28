@@ -10,10 +10,13 @@ This file is Copyright Chris Anderson (c) 2026
 """
 # ***********************************************************************
 
+import datetime
 import os
 import shutil
-import sys
+import datetime
+import os
 import traceback
+import win32com.client
 import wx
 
 # -----------------------------------------------------------------------
@@ -21,7 +24,7 @@ import wx
 # -----------------------------------------------------------------------
 
 BACKUP_ROOT = r"C:\Users\chris\Mod-Backup"
-BACKUP_FOLDER_PREFIX = "VPR_Tech_"
+BACKUP_FOLDER_PREFIX = "VPRTech_"
 STARFIELD_DATA = r"C:\Program Files (x86)\Steam\steamapps\common\Starfield\Data"
 
 
@@ -108,8 +111,8 @@ class VPRTechModRestoreFrame(wx.Frame):
         self.btn_restore = wx.Button(panel, label="Restore")
         self.btn_quit = wx.Button(panel, label="Quit")
 
-        btn_sizer.Add(self.btn_restore, 0, wx.ALL, 5)
         btn_sizer.AddStretchSpacer(1)
+        btn_sizer.Add(self.btn_restore, 0, wx.ALL, 5)
         btn_sizer.Add(self.btn_quit, 0, wx.ALL, 5)
 
         main_sizer.Add(splitter, 1, wx.EXPAND | wx.ALL, 5)
@@ -207,24 +210,49 @@ class VPRTechModRestoreFrame(wx.Frame):
 
     def _update_details_for_file(self, file_path):
         """
-        _update_details_for_file: Show basic file properties similar to
-        Properties > Details.
+        _update_details_for_file: Show full Windows Properties > Details metadata.
+        Works on Python 3.11.9 + wxPython 3.x.
         """
+
         if not os.path.isfile(file_path):
             raise FileNotFoundError(f"Selected path is not a file: {file_path}")
 
         stat = os.stat(file_path)
 
-        # Basic details (approximation of Properties > Details)
+        # Basic info
+        created  = datetime.datetime.fromtimestamp(stat.st_ctime).strftime("%Y-%m-%d %H:%M:%S")
+        modified = datetime.datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+        accessed = datetime.datetime.fromtimestamp(stat.st_atime).strftime("%Y-%m-%d %H:%M:%S")
+
         lines = []
-        lines.append(f"File: {os.path.basename(file_path)}")
+        lines.append(f"File Name: {os.path.basename(file_path)}")
         lines.append(f"Full Path: {file_path}")
         lines.append(f"Size: {stat.st_size} bytes")
-        lines.append(f"Created: {wx.DateTime.FromTimeT(int(stat.st_ctime)).FormatISOCombined(' ')}")
-        lines.append(f"Modified: {wx.DateTime.FromTimeT(int(stat.st_mtime)).FormatISOCombined(' ')}")
-        lines.append(f"Accessed: {wx.DateTime.FromTimeT(int(stat.st_atime)).FormatISOCombined(' ')}")
+        lines.append(f"Created: {created}")
+        lines.append(f"Modified: {modified}")
+        lines.append(f"Accessed: {accessed}")
+        lines.append("")
+
+        # Windows Shell extended metadata (Properties > Details)
+        try:
+            shell = win32com.client.Dispatch("Shell.Application")
+            folder = shell.NameSpace(os.path.dirname(file_path))
+            item = folder.ParseName(os.path.basename(file_path))
+
+            # Windows exposes ~300 possible metadata fields (0–287)
+            for i in range(0, 288):
+                key = folder.GetDetailsOf(None, i)
+                value = folder.GetDetailsOf(item, i)
+                if key and value:
+                    lines.append(f"{key}: {value}")
+
+        except Exception as exc:
+            lines.append("")
+            lines.append("Extended metadata unavailable.")
+            lines.append(f"Reason: {exc}")
 
         self.details_text.SetValue("\n".join(lines))
+
 
     def _on_restore_clicked(self, event):
         """
