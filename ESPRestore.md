@@ -2,7 +2,7 @@
 
 ### **Version 1.0 — October 2026**
 
-### **Author: Chris Anderson**
+### **Author: ViperOnYourSix**
 
 ## **Overview**
 

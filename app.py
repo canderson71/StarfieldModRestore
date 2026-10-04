@@ -16,6 +16,7 @@ Notes:
 """
 # ***********************************************************************
 
+import ctypes
 import wx
 
 from ini_manager import IniManager
@@ -24,6 +25,7 @@ from restore_manager import RestoreManager
 from tree_panel import TreePanel
 from dialogs.settings_dialog import SettingsDialog
 from dialogs.error_dialog import ErrorDialog
+
 
 
 class MainFrame(wx.Frame):

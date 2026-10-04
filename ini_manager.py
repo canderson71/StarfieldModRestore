@@ -19,6 +19,7 @@ Default Published folder:
 
 import os
 import configparser
+import sys
 
 
 INI_NAME = "espr.ini"
@@ -61,6 +62,13 @@ class IniManager:
             self._save()
 
     # ------------------------------------------------------------------
+
+    def get_resource_path(self, relative_path: str) -> str:
+        if getattr(sys, 'frozen', False):
+            base_path: str = sys._MEIPASS  # type: ignore[attr-defined]
+        else:
+            base_path: str = os.path.dirname(os.path.abspath(__file__))
+        return os.path.join(base_path, relative_path)
 
     def _save(self):
         if not self.config.has_section(INI_SECTION):

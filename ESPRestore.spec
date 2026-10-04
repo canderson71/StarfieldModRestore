@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['vprtech_mod_restore.py'],
+    ['app.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('dialogs', 'dialogs')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
