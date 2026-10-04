@@ -57,6 +57,5 @@ Project Start: October 2026
 ### Not yet scheduled
 - Optional logging module (debug + verbose modes).
 - Version tagging for backups.
-- “Compare ESP to previous backup” diff viewer. - Maybe
 - Exportable backup manifest.
 
