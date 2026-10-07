@@ -53,8 +53,13 @@ class BackupManager:
         os.makedirs(published_full, exist_ok=True)
 
         files = os.listdir(restore_path)
-        esp_files = [f for f in files if f.lower().endswith(".esp") and ident in f.lower()]
+        esp_files = [f for f in files if f.lower().endswith(".ba2") and ident in f.lower()]
+        ba2_files = [f for f in files if f.lower().endswith(".esp") and ident in f.lower()]
         esm_files = [f for f in files if f.lower().endswith(".esm") and ident in f.lower()]
+
+        # Backup BA2 (source)
+        for ba2 in ba2_files:
+            self._backup_esp(restore_path, backup_path, ba2)
 
         # Backup ESP (source)
         for esp in esp_files:

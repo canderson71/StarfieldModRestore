@@ -57,7 +57,12 @@ class RestoreManager:
 
         # Determine destination filename (strip timestamp)
         filename = os.path.basename(src_path)
-        base_name = filename.split(".")[0] + ".esp"
+
+        parts = filename.split(".")
+        base = parts[0]          # e.g., MyMod
+        ext  = parts[1]          # esp / ba2 / esm
+
+        base_name = f"{base}.{ext}"
         dst_path = os.path.join(restore_path, base_name)
 
         try:
