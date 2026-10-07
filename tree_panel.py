@@ -125,11 +125,12 @@ class TreePanel(wx.Panel):
         if parent == self.root:
             self.details.SetValue("")
             return
-
+        
         folder = self.tree.GetItemText(parent)
         filename = self.tree.GetItemText(item)
 
         full_path = os.path.join(self.ini.backup_path, folder, filename)
+        self.selected_file = full_path
 
         try:
             st = os.stat(full_path)
@@ -181,22 +182,8 @@ class TreePanel(wx.Panel):
         except Exception as e:
             self.details.SetValue(f"Error reading file:\n{e}")
 
-
     # ------------------------------------------------------------------
 
     def get_selected_file(self):
-        """Return full path of selected ESP backup file."""
-        item = self.tree.GetSelection()
-        if not item.IsOk():
-            return None
+        return getattr(self, "selected_file", None)
 
-        filename = self.tree.GetItemText(item)
-        if not filename.lower().endswith(".esp"):
-            return None
-
-        parent = self.tree.GetItemParent(item)
-        if not parent.IsOk():
-            return None
-
-        folder = self.tree.GetItemText(parent)
-        return os.path.join(self.ini.backup_path, folder, filename)

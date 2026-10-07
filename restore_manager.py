@@ -69,3 +69,10 @@ class RestoreManager:
                 f"Failed to restore file:\n{e}"
             )
             return
+        
+        # SUCCESS MESSAGE
+        ErrorDialog.show(
+            self.parent,
+            "Restore Complete",
+            f'File "{base_name}" was restored.'
+        )
